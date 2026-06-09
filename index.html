@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#fff5f7">
+  <title>For Sura</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="ambient-layer" aria-hidden="true">
+    <span class="float-shape paw p1">🐾</span>
+    <span class="float-shape star p2">✦</span>
+    <span class="float-shape heart p3">♡</span>
+    <span class="float-shape paw p4">🐾</span>
+    <span class="float-shape star p5">✧</span>
+    <span class="float-shape heart p6">♡</span>
+  </div>
+
+  <button class="music-button tap-target" id="musicToggle" type="button">Play music 🎵</button>
+
+  <main id="app">
+    <section class="screen lock-screen is-active" id="lockScreen" aria-labelledby="lockTitle">
+      <div class="screen-inner compact">
+        <div class="mini-badge">seven soft wishes</div>
+        <h1 id="lockTitle">For Sura</h1>
+        <p class="subtitle" id="lockSubtitle">A little late&hellip; but made only for you.</p>
+
+        <form class="glass-panel lock-card" id="unlockForm" autocomplete="off">
+          <p class="soft-copy" id="lockOnlyText">Only Sura can open this little surprise.</p>
+          <label for="unlockAnswer">Who is this surprise for?</label>
+          <input id="unlockAnswer" name="unlockAnswer" type="text" inputmode="text" placeholder="Type the name" aria-describedby="unlockMessage">
+          <p class="form-message" id="unlockMessage" aria-live="polite"></p>
+          <button class="primary-button tap-target" type="submit">Open the Surprise</button>
+        </form>
+      </div>
+    </section>
+
+    <section class="screen game-screen" id="gameScreen" aria-labelledby="gameTitle">
+      <div class="screen-inner wide">
+        <div class="section-heading">
+          <div class="mini-badge">birthday cats</div>
+          <h2 id="gameTitle">Help the Birthday Cats Find 7 Wishes</h2>
+          <p id="gameSubtitle">I&rsquo;m 7 days late, so I hid 7 wishes with the cats.</p>
+        </div>
+
+        <div class="progress-wrap" aria-live="polite">
+          <span id="wishProgress">0 / 7 wishes collected</span>
+          <div class="progress-track" aria-hidden="true">
+            <span id="progressBar"></span>
+          </div>
+        </div>
+
+        <div class="cat-grid" id="gameGrid" aria-label="Birthday cat cards"></div>
+
+        <div class="completion-note" id="gameComplete" hidden>
+          <p>You found all 7 wishes. Now your real surprise is open.</p>
+          <button class="primary-button tap-target" id="openGiftButton" type="button">Open the Gift</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen gift-screen" id="giftScreen" aria-labelledby="giftTitle">
+      <div class="screen-inner compact">
+        <div class="section-heading">
+          <div class="mini-badge">unlocked</div>
+          <h2 id="giftTitle">You unlocked the gift.</h2>
+          <p>Tap the gift</p>
+        </div>
+
+        <button class="gift-box tap-target" id="giftBox" type="button" aria-label="Open the gift">
+          <span class="gift-lid"></span>
+          <span class="gift-ribbon vertical"></span>
+          <span class="gift-ribbon horizontal"></span>
+          <span class="gift-body"></span>
+          <span class="gift-glow" aria-hidden="true"></span>
+        </button>
+
+        <div class="gift-message glass-panel" id="giftMessage" hidden>
+          <p>This is not just a late birthday wish&hellip; it&rsquo;s a small reminder that you are appreciated.</p>
+          <button class="primary-button tap-target" id="continueButton" type="button">Continue</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="main-content" id="mainContent" aria-label="Birthday message for Sura" hidden>
+      <section class="hero-section content-band">
+        <div class="hero-copy reveal">
+          <div class="mini-badge">made for friendship</div>
+          <h1 id="heroTitle"></h1>
+          <p id="heroSubtitle"></p>
+        </div>
+        <div class="hero-art reveal" id="heroArt" aria-hidden="true"></div>
+      </section>
+
+      <section class="content-band wishes-section" aria-labelledby="wishesTitle">
+        <div class="section-heading reveal">
+          <div class="mini-badge">seven days</div>
+          <h2 id="wishesTitle">7 Days Late, 7 Wishes</h2>
+          <p>Each late day brought one more wish for you.</p>
+        </div>
+        <div class="wish-list" id="wishList"></div>
+      </section>
+
+      <section class="content-band cats-section" aria-labelledby="catsTitle">
+        <div class="section-heading reveal">
+          <div class="mini-badge">soft paws</div>
+          <h2 id="catsTitle">Because You Love Cats</h2>
+          <p>So instead of normal photos, this little surprise comes with cats, softness, and wishes made just for you.</p>
+        </div>
+        <div class="cat-showcase" id="catShowcase"></div>
+      </section>
+
+      <section class="content-band message-section" aria-labelledby="messageTitle">
+        <div class="letter-card reveal">
+          <h2 id="messageTitle">A Little Letter</h2>
+          <div id="mainMessage"></div>
+        </div>
+      </section>
+
+      <section class="content-band finale-section" aria-labelledby="finalTitle">
+        <div class="final-panel reveal">
+          <h2 id="finalTitle">Late by 7 days&hellip; but still wishing you the best for the whole year.</h2>
+          <button class="primary-button tap-target" id="replayButton" type="button">Replay the Surprise</button>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <div class="confetti-layer" id="confettiLayer" aria-hidden="true"></div>
+  <script src="script.js"></script>
+</body>
+</html>

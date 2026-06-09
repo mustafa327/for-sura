@@ -8,6 +8,7 @@ const SURPRISE_CONFIG = {
   // Put your audio file here. iPhone Safari only plays it after a tap.
   musicPath: "music/the_mountain-happy-birthday-508020.mp3",
   autoStartMusicAfterUnlock: true,
+  shuffleGameCards: false,
 
   // Edit these lines to change the wishes in the game and the wishes section.
   wishes: [
@@ -219,7 +220,8 @@ function renderGameCards() {
     catType: trick.type
   }));
 
-  const cards = shuffleCards([...wishCards, ...trickCards]);
+  const orderedCards = [...wishCards, ...trickCards];
+  const cards = SURPRISE_CONFIG.shuffleGameCards ? shuffleCards(orderedCards) : orderedCards;
   elements.gameGrid.innerHTML = "";
 
   cards.forEach((card) => {

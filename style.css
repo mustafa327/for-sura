@@ -125,6 +125,10 @@ input:focus-visible {
   animation: screenIn 420ms ease both;
 }
 
+.game-screen.is-active {
+  align-items: start;
+}
+
 .screen-inner {
   width: min(100%, 760px);
 }
@@ -384,6 +388,10 @@ input::placeholder {
 
 .card-back {
   transform: rotateY(180deg);
+}
+
+.card-back > span {
+  width: 100%;
 }
 
 .card-back p {
@@ -819,17 +827,89 @@ input::placeholder {
 }
 
 @media (max-width: 430px) {
+  .screen {
+    padding:
+      calc(70px + env(safe-area-inset-top))
+      12px
+      calc(116px + env(safe-area-inset-bottom));
+  }
+
+  .game-screen .screen-inner {
+    max-width: 390px;
+  }
+
+  .game-screen .section-heading {
+    margin-bottom: 12px;
+  }
+
+  .game-screen .mini-badge {
+    min-height: 26px;
+    padding: 4px 9px;
+    font-size: 0.64rem;
+  }
+
+  .game-screen h2 {
+    margin-bottom: 8px;
+    font-size: clamp(1.5rem, 7vw, 1.9rem);
+    line-height: 1.06;
+  }
+
+  .game-screen .section-heading p {
+    font-size: 0.86rem;
+    line-height: 1.38;
+  }
+
+  .progress-wrap {
+    margin-bottom: 12px;
+    font-size: 0.86rem;
+  }
+
   .cat-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
   }
 
   .cat-card-button {
-    min-height: 154px;
+    min-height: 112px;
+  }
+
+  .card-face {
+    padding: 7px;
   }
 
   .card-front .cat-mini {
-    width: 58px;
-    height: 58px;
+    width: 42px;
+    height: 42px;
+  }
+
+  .card-front strong {
+    max-width: 100%;
+    font-size: 0.66rem;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+  }
+
+  .card-back .wish-mark {
+    width: 23px;
+    height: 23px;
+    margin-bottom: 5px;
+    font-size: 0.76rem;
+  }
+
+  .card-back p {
+    font-size: 0.62rem;
+    line-height: 1.18;
+    overflow-wrap: anywhere;
+  }
+
+  .completion-note {
+    margin-top: 14px;
+    padding: 14px;
+  }
+
+  .completion-note p {
+    margin-bottom: 10px;
+    font-size: 0.88rem;
   }
 
   .cat-profile {

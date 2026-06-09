@@ -7,6 +7,7 @@ const SURPRISE_CONFIG = {
 
   // Put your audio file here. iPhone Safari only plays it after a tap.
   musicPath: "music/the_mountain-happy-birthday-508020.mp3",
+  autoStartMusicAfterUnlock: true,
 
   // Edit these lines to change the wishes in the game and the wishes section.
   wishes: [
@@ -162,13 +163,16 @@ function renderIntroText() {
   document.querySelector("#finalTitle").textContent = `Late by ${SURPRISE_CONFIG.birthdayLateDays} days... but still wishing you the best for the whole year.`;
 }
 
-function handleUnlock(event) {
+async function handleUnlock(event) {
   event.preventDefault();
   const answer = elements.unlockAnswer.value.trim().toLowerCase();
 
   if (answer === SURPRISE_CONFIG.unlockAnswer.toLowerCase()) {
     elements.unlockMessage.textContent = "";
     showScreen("game");
+    if (SURPRISE_CONFIG.autoStartMusicAfterUnlock) {
+      await playMusic({ showMissingMessage: false });
+    }
     return;
   }
 
@@ -374,28 +378,39 @@ function setupMusic() {
 
   elements.musicToggle.addEventListener("click", async () => {
     if (!state.isMusicPlaying) {
-      try {
-        await state.audio.play();
-        state.isMusicPlaying = true;
-        elements.musicToggle.textContent = "Pause music";
-      } catch (error) {
-        state.isMusicPlaying = false;
-        elements.musicToggle.textContent = "Music file not found";
-        window.setTimeout(() => {
-          if (!state.isMusicPlaying) elements.musicToggle.textContent = "Play music 🎵";
-        }, 1800);
-      }
+      await playMusic({ showMissingMessage: true });
       return;
     }
 
-    state.audio.pause();
-    state.isMusicPlaying = false;
-    elements.musicToggle.textContent = "Play music 🎵";
+    pauseMusic();
   });
 
   state.audio.addEventListener("error", () => {
     state.isMusicPlaying = false;
   });
+}
+
+async function playMusic({ showMissingMessage }) {
+  try {
+    await state.audio.play();
+    state.isMusicPlaying = true;
+    elements.musicToggle.textContent = "Pause music";
+  } catch (error) {
+    state.isMusicPlaying = false;
+
+    if (showMissingMessage) {
+      elements.musicToggle.textContent = "Music file not found";
+      window.setTimeout(() => {
+        if (!state.isMusicPlaying) elements.musicToggle.textContent = "Play music 🎵";
+      }, 1800);
+    }
+  }
+}
+
+function pauseMusic() {
+  state.audio.pause();
+  state.isMusicPlaying = false;
+  elements.musicToggle.textContent = "Play music 🎵";
 }
 
 function resetExperience() {

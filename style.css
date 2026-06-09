@@ -829,9 +829,13 @@ input::placeholder {
 @media (max-width: 430px) {
   .screen {
     padding:
-      calc(70px + env(safe-area-inset-top))
+      calc(34px + env(safe-area-inset-top))
       12px
       calc(116px + env(safe-area-inset-bottom));
+  }
+
+  .ambient-layer {
+    display: none;
   }
 
   .game-screen .screen-inner {
@@ -850,18 +854,18 @@ input::placeholder {
 
   .game-screen h2 {
     margin-bottom: 8px;
-    font-size: clamp(1.5rem, 7vw, 1.9rem);
+    font-size: clamp(1.28rem, 6.2vw, 1.62rem);
     line-height: 1.06;
   }
 
   .game-screen .section-heading p {
-    font-size: 0.86rem;
+    font-size: 0.8rem;
     line-height: 1.38;
   }
 
   .progress-wrap {
     margin-bottom: 12px;
-    font-size: 0.86rem;
+    font-size: 0.8rem;
   }
 
   .cat-grid {

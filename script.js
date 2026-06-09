@@ -5,8 +5,8 @@ const SURPRISE_CONFIG = {
   unlockAnswer: "sura",
   birthdayLateDays: 7,
 
-  // Put your audio file at music/song.mp3. iPhone Safari only plays it after a tap.
-  musicPath: "music/song.mp3",
+  // Put your audio file here. iPhone Safari only plays it after a tap.
+  musicPath: "music/the_mountain-happy-birthday-508020.mp3",
 
   // Edit these lines to change the wishes in the game and the wishes section.
   wishes: [
@@ -56,6 +56,30 @@ const SURPRISE_CONFIG = {
     }
   ],
 
+  // Add, remove, or rename local image files here. Keep them inside the images folder.
+  uploadedCatImages: [
+    {
+      src: "images/22222.jpg",
+      alt: "Birthday cat with balloons and a party hat",
+      caption: "A tiny birthday cat carrying extra cheer."
+    },
+    {
+      src: "images/33333.jpg",
+      alt: "Cute cat holding a birthday cake",
+      caption: "A soft cake cat for the late celebration."
+    },
+    {
+      src: "images/44444.jpg",
+      alt: "Cat sitting on balloons with birthday text",
+      caption: "A balloon cat keeping the birthday mood floating."
+    },
+    {
+      src: "images/11111.jpg",
+      alt: "Pastel cat balloon and cloud pattern",
+      caption: "A pastel cloud of cats, because Sura loves them."
+    }
+  ],
+
   // Edit this message to personalize the letter.
   mainMessage: `Dear Sura,
 
@@ -100,6 +124,8 @@ const elements = {
   heroArt: document.querySelector("#heroArt"),
   wishList: document.querySelector("#wishList"),
   catShowcase: document.querySelector("#catShowcase"),
+  uploadedCatSection: document.querySelector("#uploadedCatSection"),
+  uploadedImageGrid: document.querySelector("#uploadedImageGrid"),
   mainMessage: document.querySelector("#mainMessage"),
   replayButton: document.querySelector("#replayButton"),
   musicToggle: document.querySelector("#musicToggle"),
@@ -112,6 +138,7 @@ function init() {
   renderGameCards();
   renderWishes();
   renderCatCards();
+  renderUploadedImages();
   renderMessage();
   setupEvents();
   setupRevealAnimations();
@@ -286,6 +313,23 @@ function renderCatCards() {
       </span>
     `;
     elements.catShowcase.appendChild(card);
+  });
+}
+
+function renderUploadedImages() {
+  if (!SURPRISE_CONFIG.uploadedCatImages.length) return;
+
+  elements.uploadedCatSection.hidden = false;
+  elements.uploadedImageGrid.innerHTML = "";
+
+  SURPRISE_CONFIG.uploadedCatImages.forEach((image) => {
+    const figure = document.createElement("figure");
+    figure.className = "uploaded-image-card reveal";
+    figure.innerHTML = `
+      <img src="${image.src}" alt="${image.alt}" loading="lazy">
+      <figcaption>${image.caption}</figcaption>
+    `;
+    elements.uploadedImageGrid.appendChild(figure);
   });
 }
 

@@ -29,16 +29,22 @@ Keep blank lines between paragraphs if you want the letter to stay nicely spaced
 Put your music file here:
 
 ```text
-music/song.mp3
+music/the_mountain-happy-birthday-508020.mp3
 ```
 
-The music does not autoplay. On iPhone Safari and WhatsApp browser, the visitor must tap the music button first. If `music/song.mp3` is missing, the page still works.
+The music does not autoplay. On iPhone Safari and WhatsApp browser, the visitor must tap the music button first. If the music file is missing, the page still works.
 
 To use a different file name, edit this line in `script.js`:
 
 ```js
-musicPath: "music/song.mp3",
+musicPath: "music/the_mountain-happy-birthday-508020.mp3",
 ```
+
+## How to edit the extra cat images
+
+Put image files inside the `images` folder, then edit the `uploadedCatImages` list in `script.js`.
+
+Each image has a `src`, `alt`, and `caption`. Remove all items from the list if you want to hide the extra image section.
 
 ## How to test locally
 

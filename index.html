@@ -33,6 +33,55 @@
           <p class="form-message" id="unlockMessage" aria-live="polite"></p>
           <button class="primary-button tap-target" type="submit">Open the Surprise</button>
         </form>
+
+        <div class="home-game-cta">
+          <span class="cta-decoration cta-paw" aria-hidden="true">&#128062;</span>
+          <span class="cta-decoration cta-star" aria-hidden="true">&#11088;</span>
+          <p>Already opened the surprise? Try this little cat game.</p>
+          <button class="cat-game-cta-button tap-target" id="goToCatGame" type="button">
+            Play Sura&rsquo;s Cat Game &#128062;
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="cat-game-section" id="cat-game" aria-labelledby="catGameTitle">
+      <div class="cat-game-inner">
+        <div class="section-heading">
+          <div class="mini-badge">little cat game</div>
+          <h2 id="catGameTitle">Cat Catcher</h2>
+          <p>A soft tiny game for Sura.</p>
+        </div>
+
+        <div class="cat-game-panel">
+          <div class="cat-game-stats" aria-live="polite">
+            <span class="cat-game-stat">Time: <strong id="catGameTime">30</strong></span>
+            <span class="cat-game-stat">Score: <strong id="catGameScore">0</strong></span>
+            <span class="cat-game-stat">Best: <strong id="catGameBest">0</strong></span>
+          </div>
+
+          <div class="cat-playfield" id="catPlayfield" role="application" aria-label="Cat Catcher play area">
+            <div class="cat-playfield-sky" aria-hidden="true">
+              <span>&#10022;</span>
+              <span>&#128062;</span>
+              <span>&#10022;</span>
+            </div>
+
+            <div class="cat-basket" id="catBasket" aria-hidden="true">
+              <span class="basket-cat">&#128570;</span>
+              <span class="basket-bowl"></span>
+            </div>
+
+            <div class="cat-game-over" id="catGameOver" hidden>
+              <div class="cat-game-over-card">
+                <div class="mini-badge">game over</div>
+                <h3>Cat Catcher</h3>
+                <p id="catGameResult">Score: 0</p>
+                <button class="primary-button tap-target" id="catGameRestart" type="button">Play Again &#128062;</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 

@@ -98,11 +98,31 @@ Happy late birthday, Sura.
 Late by 7 days... but still from the heart.`
 };
 
+const CAT_GAME_DURATION_SECONDS = 30;
+const CAT_GAME_STORAGE_KEY = "suraCatCatcherBest";
+const CAT_GAME_ITEMS = ["\uD83D\uDC3E", "\u2B50", "\uD83D\uDC9B", "\uD83E\uDDC1"];
+
 const state = {
   collectedWishes: 0,
   openedCards: new Set(),
   audio: null,
   isMusicPlaying: false
+};
+
+const catGameState = {
+  time: CAT_GAME_DURATION_SECONDS,
+  score: 0,
+  best: 0,
+  running: false,
+  ended: false,
+  basketX: 0,
+  basketRatio: 0.5,
+  pointerActive: false,
+  spawnTimer: null,
+  tickTimer: null,
+  animationFrame: null,
+  lastFrame: 0,
+  items: []
 };
 
 const elements = {
@@ -131,7 +151,17 @@ const elements = {
   mainMessage: document.querySelector("#mainMessage"),
   replayButton: document.querySelector("#replayButton"),
   musicToggle: document.querySelector("#musicToggle"),
-  confettiLayer: document.querySelector("#confettiLayer")
+  confettiLayer: document.querySelector("#confettiLayer"),
+  goToCatGame: document.querySelector("#goToCatGame"),
+  catGameSection: document.querySelector("#cat-game"),
+  catPlayfield: document.querySelector("#catPlayfield"),
+  catBasket: document.querySelector("#catBasket"),
+  catGameTime: document.querySelector("#catGameTime"),
+  catGameScore: document.querySelector("#catGameScore"),
+  catGameBest: document.querySelector("#catGameBest"),
+  catGameOver: document.querySelector("#catGameOver"),
+  catGameResult: document.querySelector("#catGameResult"),
+  catGameRestart: document.querySelector("#catGameRestart")
 };
 
 function init() {
@@ -142,6 +172,7 @@ function init() {
   renderCatCards();
   renderUploadedImages();
   renderMessage();
+  setupCatGame();
   setupEvents();
   setupRevealAnimations();
   setupMusic();
@@ -153,6 +184,294 @@ function setupEvents() {
   elements.giftBox.addEventListener("click", openGift);
   elements.continueButton.addEventListener("click", showMainContent);
   elements.replayButton.addEventListener("click", resetExperience);
+  elements.goToCatGame.addEventListener("click", handleCatGameCta);
+}
+
+function setupCatGame() {
+  catGameState.best = readCatGameBest();
+  updateCatBasketFromRatio();
+  updateCatGameStats();
+  setCatGameVisibility(true);
+
+  elements.catPlayfield.addEventListener("pointerdown", handleCatGamePointerDown);
+  elements.catPlayfield.addEventListener("pointermove", handleCatGamePointerMove);
+  elements.catPlayfield.addEventListener("pointerup", handleCatGamePointerEnd);
+  elements.catPlayfield.addEventListener("pointercancel", handleCatGamePointerEnd);
+  elements.catGameRestart.addEventListener("click", () => startCatGame({ reset: true }));
+  window.addEventListener("resize", updateCatBasketFromRatio);
+}
+
+function handleCatGameCta() {
+  setCatGameVisibility(true);
+  elements.catGameSection.scrollIntoView({
+    behavior: prefersReducedMotion() ? "auto" : "smooth",
+    block: "start"
+  });
+
+  window.setTimeout(() => {
+    if (!catGameState.running) {
+      startCatGame({ reset: true });
+    }
+  }, prefersReducedMotion() ? 60 : 560);
+}
+
+function setCatGameVisibility(isVisible) {
+  if (!elements.catGameSection) return;
+
+  if (!isVisible) {
+    resetCatGame();
+    elements.catGameSection.hidden = true;
+    return;
+  }
+
+  elements.catGameSection.hidden = false;
+  updateCatBasketFromRatio();
+}
+
+function handleCatGamePointerDown(event) {
+  if (event.target.closest(".cat-game-over")) return;
+
+  catGameState.pointerActive = true;
+  if (elements.catPlayfield.setPointerCapture) {
+    elements.catPlayfield.setPointerCapture(event.pointerId);
+  }
+  moveCatBasketToClientX(event.clientX);
+
+  if (!catGameState.running && !catGameState.ended) {
+    startCatGame({ reset: false });
+  }
+}
+
+function handleCatGamePointerMove(event) {
+  if (event.target.closest(".cat-game-over")) return;
+  if (event.pointerType !== "mouse" && !catGameState.pointerActive) return;
+
+  moveCatBasketToClientX(event.clientX);
+
+  if (!catGameState.running && !catGameState.ended) {
+    startCatGame({ reset: false });
+  }
+}
+
+function handleCatGamePointerEnd(event) {
+  catGameState.pointerActive = false;
+  if (elements.catPlayfield.releasePointerCapture && elements.catPlayfield.hasPointerCapture(event.pointerId)) {
+    elements.catPlayfield.releasePointerCapture(event.pointerId);
+  }
+}
+
+function startCatGame({ reset }) {
+  if (catGameState.running) return;
+
+  if (reset) {
+    resetCatGame();
+  }
+
+  catGameState.running = true;
+  catGameState.ended = false;
+  catGameState.lastFrame = 0;
+  elements.catGameOver.hidden = true;
+  updateCatGameStats();
+  spawnCatItem();
+
+  catGameState.spawnTimer = window.setInterval(spawnCatItem, 640);
+  catGameState.tickTimer = window.setInterval(() => {
+    catGameState.time -= 1;
+    updateCatGameStats();
+
+    if (catGameState.time <= 0) {
+      finishCatGame();
+    }
+  }, 1000);
+
+  catGameState.animationFrame = window.requestAnimationFrame(animateCatGame);
+}
+
+function resetCatGame() {
+  stopCatGameTimers();
+  clearCatGameItems();
+  catGameState.time = CAT_GAME_DURATION_SECONDS;
+  catGameState.score = 0;
+  catGameState.running = false;
+  catGameState.ended = false;
+  catGameState.lastFrame = 0;
+  catGameState.pointerActive = false;
+  elements.catGameOver.hidden = true;
+  updateCatBasketFromRatio();
+  updateCatGameStats();
+}
+
+function finishCatGame() {
+  if (!catGameState.running) return;
+
+  stopCatGameTimers();
+  catGameState.running = false;
+  catGameState.ended = true;
+  catGameState.time = 0;
+
+  if (catGameState.score > catGameState.best) {
+    catGameState.best = catGameState.score;
+    saveCatGameBest(catGameState.best);
+  }
+
+  updateCatGameStats();
+  elements.catGameResult.textContent = `Score: ${catGameState.score}`;
+  elements.catGameOver.hidden = false;
+}
+
+function stopCatGameTimers() {
+  if (catGameState.spawnTimer) {
+    window.clearInterval(catGameState.spawnTimer);
+    catGameState.spawnTimer = null;
+  }
+
+  if (catGameState.tickTimer) {
+    window.clearInterval(catGameState.tickTimer);
+    catGameState.tickTimer = null;
+  }
+
+  if (catGameState.animationFrame) {
+    window.cancelAnimationFrame(catGameState.animationFrame);
+    catGameState.animationFrame = null;
+  }
+}
+
+function spawnCatItem() {
+  if (!catGameState.running) return;
+
+  const fieldWidth = elements.catPlayfield.clientWidth;
+  const size = fieldWidth < 420 ? 34 : 40;
+  const itemElement = document.createElement("span");
+  const item = {
+    element: itemElement,
+    x: Math.random() * Math.max(1, fieldWidth - size),
+    y: -size,
+    size,
+    speed: 120 + Math.random() * 74 + Math.min(catGameState.score * 2, 62)
+  };
+
+  itemElement.className = "cat-falling-item";
+  itemElement.textContent = CAT_GAME_ITEMS[Math.floor(Math.random() * CAT_GAME_ITEMS.length)];
+  itemElement.style.width = `${size}px`;
+  itemElement.style.height = `${size}px`;
+  itemElement.style.transform = `translate3d(${item.x}px, ${item.y}px, 0)`;
+  itemElement.setAttribute("aria-hidden", "true");
+
+  elements.catPlayfield.appendChild(itemElement);
+  catGameState.items.push(item);
+}
+
+function animateCatGame(timestamp) {
+  if (!catGameState.running) return;
+
+  if (!catGameState.lastFrame) {
+    catGameState.lastFrame = timestamp;
+  }
+
+  const deltaSeconds = Math.min((timestamp - catGameState.lastFrame) / 1000, 0.05);
+  catGameState.lastFrame = timestamp;
+
+  const fieldHeight = elements.catPlayfield.clientHeight;
+  const basketWidth = elements.catBasket.offsetWidth;
+  const basketHeight = elements.catBasket.offsetHeight;
+  const basketLeft = catGameState.basketX - basketWidth / 2;
+  const basketTop = fieldHeight - basketHeight - 12;
+
+  for (let index = catGameState.items.length - 1; index >= 0; index -= 1) {
+    const item = catGameState.items[index];
+    item.y += item.speed * deltaSeconds;
+    item.element.style.transform = `translate3d(${item.x}px, ${item.y}px, 0)`;
+
+    const itemCenterX = item.x + item.size / 2;
+    const itemBottom = item.y + item.size;
+    const isInBasketX = itemCenterX >= basketLeft && itemCenterX <= basketLeft + basketWidth;
+    const isInBasketY = itemBottom >= basketTop + 8 && item.y <= basketTop + basketHeight;
+
+    if (isInBasketX && isInBasketY) {
+      catchCatItem(item);
+      catGameState.items.splice(index, 1);
+    } else if (item.y > fieldHeight + item.size) {
+      item.element.remove();
+      catGameState.items.splice(index, 1);
+    }
+  }
+
+  catGameState.animationFrame = window.requestAnimationFrame(animateCatGame);
+}
+
+function catchCatItem(item) {
+  catGameState.score += 1;
+  updateCatGameStats();
+  item.element.classList.add("is-caught");
+  item.element.style.transform = `translate3d(${item.x}px, ${item.y}px, 0) scale(1.2)`;
+  elements.catBasket.classList.add("is-catching");
+
+  window.setTimeout(() => {
+    item.element.remove();
+    elements.catBasket.classList.remove("is-catching");
+  }, 170);
+}
+
+function clearCatGameItems() {
+  catGameState.items.forEach((item) => item.element.remove());
+  catGameState.items = [];
+}
+
+function moveCatBasketToClientX(clientX) {
+  const rect = elements.catPlayfield.getBoundingClientRect();
+  if (rect.width <= 0) return;
+
+  const basketWidth = elements.catBasket.offsetWidth;
+  const minX = basketWidth / 2;
+  const maxX = Math.max(minX, rect.width - basketWidth / 2);
+  const nextX = clamp(clientX - rect.left, minX, maxX);
+
+  catGameState.basketX = nextX;
+  catGameState.basketRatio = nextX / rect.width;
+  elements.catBasket.style.left = `${catGameState.basketRatio * 100}%`;
+}
+
+function updateCatBasketFromRatio() {
+  if (!elements.catPlayfield || !elements.catBasket) return;
+
+  const fieldWidth = elements.catPlayfield.clientWidth;
+  if (fieldWidth <= 0) return;
+
+  const basketWidth = elements.catBasket.offsetWidth;
+  const minX = basketWidth / 2;
+  const maxX = Math.max(minX, fieldWidth - basketWidth / 2);
+  const nextX = clamp(fieldWidth * catGameState.basketRatio, minX, maxX);
+
+  catGameState.basketX = nextX;
+  catGameState.basketRatio = nextX / fieldWidth;
+  elements.catBasket.style.left = `${catGameState.basketRatio * 100}%`;
+}
+
+function updateCatGameStats() {
+  elements.catGameTime.textContent = Math.max(0, catGameState.time);
+  elements.catGameScore.textContent = catGameState.score;
+  elements.catGameBest.textContent = Math.max(catGameState.best, catGameState.score);
+}
+
+function readCatGameBest() {
+  try {
+    const value = Number(window.localStorage.getItem(CAT_GAME_STORAGE_KEY));
+    return Number.isFinite(value) && value > 0 ? value : 0;
+  } catch (error) {
+    return 0;
+  }
+}
+
+function saveCatGameBest(score) {
+  try {
+    window.localStorage.setItem(CAT_GAME_STORAGE_KEY, String(score));
+  } catch (error) {
+    // Private browsing can block localStorage writes.
+  }
+}
+
+function prefersReducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
 function renderIntroText() {
@@ -185,6 +504,7 @@ function showScreen(screenName) {
   elements.gameScreen.classList.toggle("is-active", screenName === "game");
   elements.giftScreen.classList.toggle("is-active", screenName === "gift");
   elements.mainContent.hidden = true;
+  setCatGameVisibility(screenName === "lock");
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -193,6 +513,7 @@ function showMainContent() {
   elements.gameScreen.classList.remove("is-active");
   elements.giftScreen.classList.remove("is-active");
   elements.mainContent.hidden = false;
+  setCatGameVisibility(false);
   window.scrollTo({ top: 0, behavior: "smooth" });
   markVisibleReveals();
 }
@@ -458,6 +779,10 @@ function shuffleCards(cards) {
 
 function lowercaseFirst(text) {
   return `${text.charAt(0).toLowerCase()}${text.slice(1)}`;
+}
+
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
 }
 
 function formatText(text) {

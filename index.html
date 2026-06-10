@@ -34,53 +34,40 @@
           <button class="primary-button tap-target" type="submit">Open the Surprise</button>
         </form>
 
-        <div class="home-game-cta">
-          <span class="cta-decoration cta-paw" aria-hidden="true">&#128062;</span>
-          <span class="cta-decoration cta-star" aria-hidden="true">&#11088;</span>
-          <p>Already opened the surprise? Try this little cat game.</p>
-          <button class="cat-game-cta-button tap-target" id="goToCatGame" type="button">
-            Play Sura&rsquo;s Cat Game &#128062;
-          </button>
-        </div>
-      </div>
-    </section>
+        <div class="return-game-shell" id="returnGameShell" aria-label="You Opened It Again">
+          <span class="return-decoration return-paw" aria-hidden="true">&#128062;</span>
+          <span class="return-decoration return-star" aria-hidden="true">&#10022;</span>
 
-    <section class="cat-game-section" id="cat-game" aria-labelledby="catGameTitle">
-      <div class="cat-game-inner">
-        <div class="section-heading">
-          <div class="mini-badge">little cat game</div>
-          <h2 id="catGameTitle">Cat Catcher</h2>
-          <p>A soft tiny game for Sura.</p>
-        </div>
+          <p class="return-game-hint" id="returnGameHint">A tiny cat secret may appear here later&hellip;</p>
 
-        <div class="cat-game-panel">
-          <div class="cat-game-stats" aria-live="polite">
-            <span class="cat-game-stat">Time: <strong id="catGameTime">30</strong></span>
-            <span class="cat-game-stat">Score: <strong id="catGameScore">0</strong></span>
-            <span class="cat-game-stat">Best: <strong id="catGameBest">0</strong></span>
-          </div>
+          <article class="return-game-card" id="returnGameCard" hidden>
+            <div class="mini-badge" id="returnGameFeature">You Opened It Again&hellip;</div>
+            <h2 id="returnGameTitle">Wait&hellip; you opened it again? &#128062;</h2>
+            <p id="returnGameSubtitle">The cats noticed. Since you came back, they prepared a tiny challenge.</p>
 
-          <div class="cat-playfield" id="catPlayfield" role="application" aria-label="Cat Catcher play area">
-            <div class="cat-playfield-sky" aria-hidden="true">
-              <span>&#10022;</span>
-              <span>&#128062;</span>
-              <span>&#10022;</span>
-            </div>
+            <button class="return-primary-button tap-target" id="startReturnGame" type="button">
+              Accept the Cat Challenge
+            </button>
 
-            <div class="cat-basket" id="catBasket" aria-hidden="true">
-              <span class="basket-cat">&#128570;</span>
-              <span class="basket-bowl"></span>
-            </div>
+            <div class="return-trial" id="returnTrial" hidden>
+              <div class="return-game-name" id="returnGameName">The Cat Council Trial</div>
+              <p class="return-question" id="returnQuestion">The Cat Council has one question&hellip; why did you come back?</p>
+              <div class="return-choice-grid" id="returnChoiceGrid"></div>
+              <p class="return-verdict" id="returnVerdict" hidden></p>
+              <p class="return-paw-instruction" id="returnPawInstruction" hidden>To complete the trial, catch 3 paw prints.</p>
+              <p class="return-paw-progress" id="returnPawProgress" hidden>0 / 3 paws collected</p>
+              <div class="return-paw-field" id="returnPawField" hidden aria-label="Floating paw prints"></div>
 
-            <div class="cat-game-over" id="catGameOver" hidden>
-              <div class="cat-game-over-card">
-                <div class="mini-badge">game over</div>
-                <h3>Cat Catcher</h3>
-                <p id="catGameResult">Score: 0</p>
-                <button class="primary-button tap-target" id="catGameRestart" type="button">Play Again &#128062;</button>
+              <div class="return-final" id="returnFinal" hidden>
+                <p class="return-final-message" id="returnFinalMessage"></p>
+                <div class="return-badge" id="returnBadge">Official Return Visitor of the Cat Kingdom &#128062;</div>
+                <p class="return-secret-wish" id="returnSecretWish"></p>
+                <button class="return-primary-button tap-target" id="visitSurpriseAgain" type="button">
+                  Visit the surprise again
+                </button>
               </div>
             </div>
-          </div>
+          </article>
         </div>
       </div>
     </section>

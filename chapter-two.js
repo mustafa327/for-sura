@@ -26,69 +26,75 @@
   const CATS = [
     {
       name: "Kindness Cat",
+      role: "Kindness",
       title: "Guardian of Kindness",
       question: "Would you share your last flower with a sad cat?",
       yes: "The Kindness Cat smiles. She knew your heart would say yes.",
       no: "The Kindness Cat laughs softly. Even honest answers are welcome here.",
-      x: 30,
-      y: 50,
-      bubbleX: 35,
-      bubbleY: 34
+      x: 28,
+      y: 52,
+      bubbleX: 33,
+      bubbleY: 36
     },
     {
       name: "Patience Cat",
+      role: "Patience",
       title: "Guardian of Patience",
       question: "Would you wait quietly while the moon finishes her tea?",
       yes: "The Patience Cat nods. Good things always arrive softly.",
       no: "The Patience Cat blinks slowly. The moon forgives impatience tonight.",
-      x: 39,
-      y: 42,
-      bubbleX: 44,
-      bubbleY: 27
+      x: 38,
+      y: 44,
+      bubbleX: 43,
+      bubbleY: 28
     },
     {
       name: "Dreams Cat",
+      role: "Dreams",
       title: "Guardian of Dreams",
       question: "Would you follow a tiny star if it blinked at you?",
       yes: "The Dreams Cat purrs. That is exactly how secret worlds are found.",
       no: "The Dreams Cat tilts her head. Some stars wait until you are ready.",
       x: 49,
-      y: 37,
-      bubbleX: 52,
+      y: 39,
+      bubbleX: 50,
       bubbleY: 22
     },
     {
       name: "Courage Cat",
+      role: "Courage",
       title: "Guardian of Courage",
       question: "Would you open a door that softly meowed?",
       yes: "The Courage Cat raises one paw. Brave, but still elegant.",
       no: "The Courage Cat grins. A careful heart is also a brave one.",
       x: 60,
-      y: 38,
-      bubbleX: 62,
-      bubbleY: 24
+      y: 39,
+      bubbleX: 60,
+      bubbleY: 22
     },
     {
       name: "Secrets Cat",
+      role: "Secrets",
       title: "Guardian of Secrets",
       question: "Can you keep a secret written in pawprints?",
       yes: "The Secrets Cat whispers: perfect. The pawprints trust you.",
       no: "The Secrets Cat smiles. Then this secret will keep itself.",
-      x: 70,
-      y: 43,
+      x: 71,
+      y: 44,
       bubbleX: 67,
       bubbleY: 28
     },
     {
       name: "Joy Cat",
+      role: "Joy",
       title: "Guardian of Joy",
       question: "Would you dance if the lanterns started singing?",
       yes: "The Joy Cat almost claps. The lanterns were hoping you would.",
       no: "The Joy Cat spins anyway. Joy is allowed to be shy.",
       x: 82,
-      y: 47,
-      bubbleX: 72,
-      bubbleY: 33
+      y: 50,
+      bubbleX: 73,
+      bubbleY: 35
     }
   ];
 
@@ -103,7 +109,7 @@
     let mode = "story";
     let storyIndex = 0;
     let catIndex = 0;
-    let answered = false;
+    let answered = null;
 
     const audio = musicPath ? new Audio(musicPath) : null;
     if (audio) {
@@ -121,7 +127,7 @@
         <div class="chapter-two-image-stage">
           <div class="chapter-two-image-fit">
             <img class="chapter-two-main-img" alt="">
-            <button class="cat-marker" type="button" aria-label="Current cat"></button>
+            <div class="cat-markers-layer" aria-hidden="true"></div>
             <div class="cat-question-bubble" hidden></div>
           </div>
         </div>
@@ -144,9 +150,9 @@
     const tapZone = root.querySelector(".chapter-tap-zone");
     const overlay = root.querySelector(".chapter-overlay");
     const musicButton = root.querySelector(".chapter-music-button");
-    const marker = root.querySelector(".cat-marker");
     const bubble = root.querySelector(".cat-question-bubble");
     const dots = root.querySelector(".chapter-progress-dots");
+    const markersLayer = root.querySelector(".cat-markers-layer");
 
     function imageFor(key) {
       return imagePaths[key] || "";
@@ -172,7 +178,6 @@
 
     function toggleMusic(event) {
       event.stopPropagation();
-
       if (!audio) return;
 
       if (audio.paused) {
@@ -181,6 +186,11 @@
         audio.pause();
         musicButton.textContent = "Play music";
       }
+    }
+
+    function setStoryTapEnabled(enabled) {
+      tapZone.disabled = !enabled;
+      tapZone.style.pointerEvents = enabled ? "auto" : "none";
     }
 
     function goNextStory() {
@@ -196,7 +206,7 @@
 
       mode = "cats";
       catIndex = 0;
-      answered = false;
+      answered = null;
       render();
     }
 
@@ -208,7 +218,7 @@
     function nextCat() {
       if (catIndex < CATS.length - 1) {
         catIndex += 1;
-        answered = false;
+        answered = null;
         render();
         return;
       }
@@ -221,33 +231,41 @@
       mode = "story";
       storyIndex = 0;
       catIndex = 0;
-      answered = false;
+      answered = null;
       render();
     }
 
     function renderDots() {
-      let total = STORY.length + CATS.length + 1;
+      const total = STORY.length + CATS.length + 1;
       let current = storyIndex;
 
-      if (mode === "cats") {
-        current = STORY.length + catIndex;
-      }
+      if (mode === "cats") current = STORY.length + catIndex;
+      if (mode === "final") current = total - 1;
 
-      if (mode === "final") {
-        current = total - 1;
-      }
-
-      dots.innerHTML = Array.from({ length: total }, (_, index) => {
-        return `<span class="${index === current ? "is-active" : ""}"></span>`;
+      dots.innerHTML = Array.from({ length: total }, (_, i) => {
+        return `<span class="${i === current ? "is-active" : ""}"></span>`;
       }).join("");
+    }
+
+    function renderAllCatMarkers(activeIndex) {
+      markersLayer.innerHTML = CATS.map((cat, index) => `
+        <div
+          class="cat-pin ${index === activeIndex ? "is-active" : ""}"
+          style="left:${cat.x}%; top:${cat.y}%;"
+        >
+          <span class="cat-pin-dot"></span>
+          <span class="cat-pin-label">${cat.role}</span>
+        </div>
+      `).join("");
     }
 
     function renderStory() {
       const step = STORY[storyIndex];
       setImage(step.key, step.title);
+      setStoryTapEnabled(true);
 
       shell.className = "chapter-two-immersive is-story-mode";
-      marker.hidden = true;
+      markersLayer.innerHTML = "";
       bubble.hidden = true;
 
       overlay.className = "chapter-overlay";
@@ -261,7 +279,7 @@
         </div>
       `;
 
-      overlay.querySelector("button").addEventListener("click", function (event) {
+      overlay.querySelector(".chapter-main-button").addEventListener("click", function (event) {
         event.stopPropagation();
         goNextStory();
       });
@@ -270,8 +288,11 @@
     function renderCatQuestion() {
       const cat = CATS[catIndex];
       setImage("catCouncil", "The Cat Council");
+      setStoryTapEnabled(false);
 
       shell.className = "chapter-two-immersive is-cat-mode";
+      renderAllCatMarkers(catIndex);
+
       overlay.className = "chapter-overlay is-small";
       overlay.innerHTML = `
         <div class="chapter-small-card">
@@ -279,11 +300,6 @@
           <strong>${cat.title}</strong>
         </div>
       `;
-
-      marker.hidden = false;
-      marker.style.left = `${cat.x}%`;
-      marker.style.top = `${cat.y}%`;
-      marker.setAttribute("aria-label", cat.name);
 
       bubble.hidden = false;
       bubble.style.left = `${cat.bubbleX}%`;
@@ -305,7 +321,6 @@
             answerCat(button.dataset.answer);
           });
         });
-
         return;
       }
 
@@ -317,7 +332,7 @@
         </button>
       `;
 
-      bubble.querySelector("button").addEventListener("click", function (event) {
+      bubble.querySelector(".cat-next-button").addEventListener("click", function (event) {
         event.stopPropagation();
         nextCat();
       });
@@ -325,9 +340,10 @@
 
     function renderFinal() {
       setImage("seventhChair", "The Seventh Chair");
+      setStoryTapEnabled(false);
 
       shell.className = "chapter-two-immersive is-final-mode";
-      marker.hidden = true;
+      markersLayer.innerHTML = "";
       bubble.hidden = true;
 
       overlay.className = "chapter-overlay is-center";
@@ -341,7 +357,7 @@
         </div>
       `;
 
-      overlay.querySelector("button").addEventListener("click", function (event) {
+      overlay.querySelector(".chapter-main-button").addEventListener("click", function (event) {
         event.stopPropagation();
         replay();
       });

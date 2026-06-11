@@ -917,3 +917,93 @@ body.chapter-two-fullscreen #app {
     height: 100% !important;
   }
 }
+
+/* ===== final tiny fixes ===== */
+
+/* 1) make question text white */
+.cat-question-bubble,
+.cat-question-bubble p,
+.cat-question-bubble .cat-speaker {
+  color: #fffaf3 !important;
+}
+
+.cat-question-bubble p {
+  color: rgba(255, 250, 243, 0.96) !important;
+  font-weight: 800 !important;
+}
+
+.cat-question-bubble {
+  background: rgba(48, 29, 48, 0.58) !important;
+  border: 1px solid rgba(255, 255, 255, 0.34) !important;
+}
+
+/* 2) fix the cat pointers */
+.cat-pin {
+  transform: translate(-50%, -50%) !important;
+  z-index: 6 !important;
+}
+
+.cat-pin-dot {
+  width: 12px !important;
+  height: 12px !important;
+  border: 2px solid rgba(255, 241, 194, 0.95) !important;
+  border-radius: 50% !important;
+  background: rgba(255, 226, 238, 0.32) !important;
+  box-shadow:
+    0 0 0 5px rgba(255, 230, 170, 0.10),
+    0 0 14px rgba(255, 230, 170, 0.22) !important;
+}
+
+.cat-pin-label {
+  bottom: calc(100% + 8px) !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  padding: 4px 9px !important;
+  border-radius: 999px !important;
+  white-space: nowrap !important;
+  color: #fffaf3 !important;
+  background: rgba(76, 46, 74, 0.78) !important;
+  border: 1px solid rgba(255, 238, 194, 0.32) !important;
+  font-weight: 900 !important;
+  font-size: 0.56rem !important;
+}
+
+/* active selected cat */
+.cat-pin.is-active .cat-pin-dot {
+  width: 15px !important;
+  height: 15px !important;
+  background: rgba(255, 239, 196, 0.4) !important;
+  box-shadow:
+    0 0 0 7px rgba(255, 230, 170, 0.18),
+    0 0 18px rgba(255, 230, 170, 0.46) !important;
+}
+
+.cat-pin.is-active .cat-pin-label {
+  color: #ffe6a9 !important;
+  background: rgba(92, 54, 88, 0.88) !important;
+  border-color: rgba(255, 230, 170, 0.46) !important;
+}
+
+/* mobile fine tune */
+@media (max-width: 680px) {
+  .cat-question-bubble p {
+    color: rgba(255, 250, 243, 0.97) !important;
+    font-size: 0.92rem !important;
+    line-height: 1.35 !important;
+  }
+
+  .cat-pin-dot {
+    width: 10px !important;
+    height: 10px !important;
+  }
+
+  .cat-pin.is-active .cat-pin-dot {
+    width: 13px !important;
+    height: 13px !important;
+  }
+
+  .cat-pin-label {
+    font-size: 0.5rem !important;
+    padding: 3px 7px !important;
+  }
+}

@@ -15,7 +15,7 @@
       catCouncil: "./images/03-cat-council.png",
       seventhChair: "./images/04-seventh-chair.png"
     },
-    musicPath: "/assets/audio/cat-council-theme.mp3",
+    musicPath: "./music/paulyudin-fairy-tale-ballet-310250.mp3",
     panelFadeMs: 5200
   };
 })();

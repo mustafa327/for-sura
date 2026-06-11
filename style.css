@@ -2116,3 +2116,37 @@ input::placeholder {
     transform: translate(-50%, -50%) !important;
   }
 }
+/* Direct Chapter Two mode fix */
+#chapterTwo .reveal {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+#chapterTwo {
+  min-height: 100vh;
+  padding-top: 36px;
+}
+
+#chapterTwo .chapter-two-shell {
+  display: block;
+}
+
+#chapterTwo .story-frame {
+  min-height: 520px;
+}
+
+#chapterTwo .story-panel {
+  position: absolute !important;
+  inset: 0 !important;
+  opacity: 0;
+}
+
+#chapterTwo .story-panel.is-active {
+  opacity: 1 !important;
+}
+
+#chapterTwo .story-panel img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

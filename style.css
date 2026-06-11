@@ -857,3 +857,63 @@ body.chapter-two-fullscreen #app {
     bottom: calc(env(safe-area-inset-bottom) + 172px) !important;
   }
 }
+
+/* ===== Final iPhone polish ===== */
+
+/* 1) make the yes/no question box same style as the counter */
+.cat-question-bubble {
+  background: rgba(48, 29, 48, 0.58) !important;
+  border: 1px solid rgba(255, 255, 255, 0.36) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  backdrop-filter: blur(14px) !important;
+}
+
+/* optional: same text softness */
+.cat-question-bubble p {
+  color: rgba(255, 250, 243, 0.92) !important;
+}
+
+/* 2) zoom out images more */
+.chapter-two-image-fit {
+  width: 100% !important;
+  height: 100% !important;
+  display: grid !important;
+  place-items: center !important;
+}
+
+.chapter-two-main-img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;   /* this is the important part */
+  object-position: center center !important;
+  animation: chapterSoftZoomLite 14s ease-in-out alternate infinite !important;
+  filter: brightness(0.96) saturate(1) !important;
+}
+
+/* background still fills full screen behind it */
+.chapter-two-bg-img {
+  object-fit: cover !important;
+  filter: blur(22px) saturate(1.03) brightness(0.72) !important;
+}
+
+@keyframes chapterSoftZoomLite {
+  from {
+    transform: scale(0.96);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+/* mobile fine-tune */
+@media (max-width: 680px) {
+  .cat-question-bubble {
+    background: rgba(48, 29, 48, 0.58) !important;
+  }
+
+  .chapter-two-main-img {
+    object-fit: contain !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+}

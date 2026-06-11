@@ -7,8 +7,7 @@ const SURPRISE_CONFIG = {
 
   // Put your audio file here. iPhone Safari only plays it after a tap.
   musicPath: "music/the_mountain-happy-birthday-508020.mp3",
-  autoStartMusicAfterUnlock: true,
-  shuffleGameCards: false,
+  autoStartMusicAfterUnlock: false,
 
   // Edit these lines to change the wishes in the game and the wishes section.
   wishes: [
@@ -472,8 +471,7 @@ function renderGameCards() {
     catType: trick.type
   }));
 
-  const orderedCards = [...wishCards, ...trickCards];
-  const cards = SURPRISE_CONFIG.shuffleGameCards ? shuffleCards(orderedCards) : orderedCards;
+  const cards = [...wishCards, ...trickCards];
   elements.gameGrid.innerHTML = "";
 
   cards.forEach((card) => {
@@ -598,6 +596,12 @@ function renderMessage() {
     .join("");
 }
 
+function renderChapterTwo() {
+  if (window.ChapterTwo) {
+    window.ChapterTwo.mount("#chapterTwo");
+  }
+}
+
 function setupRevealAnimations() {
   if (!("IntersectionObserver" in window)) {
     markVisibleReveals();
@@ -655,7 +659,7 @@ async function playMusic({ showMissingMessage }) {
     if (showMissingMessage) {
       elements.musicToggle.textContent = "Music file not found";
       window.setTimeout(() => {
-        if (!state.isMusicPlaying) elements.musicToggle.textContent = "Play music 🎵";
+        if (!state.isMusicPlaying) elements.musicToggle.textContent = "Play music";
       }, 1800);
     }
   }
@@ -664,7 +668,7 @@ async function playMusic({ showMissingMessage }) {
 function pauseMusic() {
   state.audio.pause();
   state.isMusicPlaying = false;
-  elements.musicToggle.textContent = "Play music 🎵";
+  elements.musicToggle.textContent = "Play music";
 }
 
 function resetExperience() {
@@ -699,13 +703,6 @@ function launchConfetti(options = {}) {
   window.setTimeout(() => {
     elements.confettiLayer.innerHTML = "";
   }, 3800);
-}
-
-function shuffleCards(cards) {
-  return cards
-    .map((card) => ({ card, sort: Math.random() }))
-    .sort((a, b) => a.sort - b.sort)
-    .map(({ card }) => card);
 }
 
 function lowercaseFirst(text) {

@@ -6,7 +6,7 @@ const SURPRISE_CONFIG = {
   birthdayLateDays: 7,
 
   // Put your audio file here. iPhone Safari only plays it after a tap.
-  musicPath: "music/the_mountain-happy-birthday-508020.mp3",
+  musicPath: "music/paulyudin-fairy-tale-ballet-310250.mp3",
   autoStartMusicAfterUnlock: false,
 
   // Edit these lines to change the wishes in the game and the wishes section.

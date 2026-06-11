@@ -10,10 +10,10 @@
       plum: "#65445b"
     },
     imagePaths: {
-      secretDoor: "/assets/chapter-two/01-secret-door.png",
-      secretWorld: "/assets/chapter-two/02-secret-world.png",
-      catCouncil: "/assets/chapter-two/03-cat-council.png",
-      seventhChair: "/assets/chapter-two/04-seventh-chair.png"
+      secretDoor: "./images/01-secret-door.png",
+      secretWorld: "./images/02-secret-world.png",
+      catCouncil: "./images/03-cat-council.png",
+      seventhChair: "./images/04-seventh-chair.png"
     },
     musicPath: "/assets/audio/cat-council-theme.mp3",
     panelFadeMs: 5200
